@@ -177,7 +177,7 @@ public abstract class AvailabilitySet {
    @SerializedNames({ "id", "name", "type", "location", "sku", "tags", "properties" })
    public static AvailabilitySet create(final String id, final String name, final String type, final String location,
          SKU sku, final Map<String, String> tags, AvailabilitySetProperties properties) {
-      return builder().id(id).name(name).type(type).location(location).sku(sku).tags(tags).properties(properties)
+      return builder().id(id).name(name).type(type).location(location.toLowerCase()).sku(sku).tags(tags).properties(properties)
             .build();
    }
    

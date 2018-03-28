@@ -30,6 +30,7 @@ import org.jclouds.azurecompute.arm.domain.AvailabilitySet;
 import org.jclouds.azurecompute.arm.domain.AvailabilitySet.AvailabilitySetProperties;
 import org.jclouds.azurecompute.arm.domain.AvailabilitySet.SKU;
 import org.jclouds.azurecompute.arm.internal.BaseAzureComputeApiLiveTest;
+import org.jclouds.location.reference.LocationConstants;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -41,12 +42,15 @@ public class AvailabilitySetApiLiveTest extends BaseAzureComputeApiLiveTest {
 
    private String asName;
 
+   private String location = LOCATION;
+
    @BeforeClass
    @Override
    public void setup() {
       super.setup();
       createTestResourceGroup();
       asName = "jclouds-" + RAND;
+      location = System.getProperty(LocationConstants.PROPERTY_REGION, LOCATION);
    }
 
    @Test
@@ -57,21 +61,27 @@ public class AvailabilitySetApiLiveTest extends BaseAzureComputeApiLiveTest {
    @Test
    public void createAvailabilitySet() {
       AvailabilitySetProperties props = AvailabilitySetProperties.builder().platformUpdateDomainCount(2)
-            .platformFaultDomainCount(3).build();
-      AvailabilitySet as = api().createOrUpdate(asName, SKU.create(MANAGED), LOCATION, null, props);
+                .platformFaultDomainCount(2).build();
+      // platformFaultDomainCount = 2 for compatibility https://github.com/Azure/acs-engine/issues/502
+
+        AvailabilitySet as = api().createOrUpdate(asName, SKU.create(MANAGED), location, null, props);
 
       assertNotNull(as);
       assertEquals(as.name(), asName);
-      
+      assertEquals(as.location(), location);
+
       assertNotNull(as.sku());
       assertEquals(as.sku().type(), MANAGED);
    }
 
    @Test(dependsOnMethods = "createAvailabilitySet")
    public void getAvailabilitySet() {
-      assertNotNull(api().get(asName));
+        AvailabilitySet as = api().get(asName);
+        assertNotNull(as.name());
+      assertEquals(as.location(), location);
+
    }
-   
+
    @Test(dependsOnMethods = "createAvailabilitySet")
    public void listAvailabilitySet() {
       assertTrue(any(api().list(), new Predicate<AvailabilitySet>() {
@@ -81,17 +91,18 @@ public class AvailabilitySetApiLiveTest extends BaseAzureComputeApiLiveTest {
          }
       }));
    }
-   
+
    @Test(dependsOnMethods = "createAvailabilitySet")
    public void updateAvailabilitySet() {
       AvailabilitySet as = api().get(asName);
-      as = api().createOrUpdate(asName, SKU.create(MANAGED), LOCATION, ImmutableMap.of("foo", "bar"), as.properties());
+        as = api().createOrUpdate(asName, SKU.create(MANAGED), location,
+                ImmutableMap.of("foo", "bar"), as.properties());
 
       assertNotNull(as);
       assertTrue(as.tags().containsKey("foo"));
       assertEquals(as.tags().get("foo"), "bar");
    }
-   
+
    @Test(dependsOnMethods = { "getAvailabilitySet", "listAvailabilitySet", "updateAvailabilitySet" })
    public void deleteAvailabilitySet() {
       URI uri = api().delete(asName);
