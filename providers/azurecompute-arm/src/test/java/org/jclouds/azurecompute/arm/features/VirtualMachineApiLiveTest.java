@@ -59,6 +59,7 @@ import org.jclouds.azurecompute.arm.domain.OSProfile.WindowsConfiguration.WinRM.
 import org.jclouds.azurecompute.arm.domain.OSProfile.WindowsConfiguration.WinRM.ProtocolListener;
 import org.jclouds.azurecompute.arm.functions.ParseJobStatus;
 import org.jclouds.azurecompute.arm.internal.BaseAzureComputeApiLiveTest;
+import org.jclouds.location.reference.LocationConstants;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 import static org.testng.util.Strings.isNullOrEmpty;
@@ -77,6 +78,7 @@ public class VirtualMachineApiLiveTest extends BaseAzureComputeApiLiveTest {
    private String nicName;
    private String virtualNetworkName;
    private String subnetId;
+   private String location;
 
    @BeforeClass
    @Override
@@ -84,12 +86,14 @@ public class VirtualMachineApiLiveTest extends BaseAzureComputeApiLiveTest {
       super.setup();
       subscriptionid = getSubscriptionId();
 
+      location = System.getProperty(LocationConstants.PROPERTY_REGION, LOCATION);
+
       createTestResourceGroup();
 
       virtualNetworkName = String.format("vn-%s-%s", this.getClass().getSimpleName().toLowerCase(), System.getProperty("user.name"));
 
       // Subnets belong to a virtual network so that needs to be created first
-      assertNotNull(createDefaultVirtualNetwork(resourceGroupName, virtualNetworkName, "10.2.0.0/16", LOCATION));
+      assertNotNull(createDefaultVirtualNetwork(resourceGroupName, virtualNetworkName, "10.2.0.0/16", location));
 
       //Subnet needs to be up & running before NIC can be created
       String subnetName = String.format("s-%s-%s", this.getClass().getSimpleName().toLowerCase(), System.getProperty("user.name"));
@@ -98,7 +102,7 @@ public class VirtualMachineApiLiveTest extends BaseAzureComputeApiLiveTest {
       assertNotNull(subnet.id());
       subnetId = subnet.id();
 
-      NetworkInterfaceCard nic = createNetworkInterfaceCard(resourceGroupName, "jc-nic-" + RAND, LOCATION, "ipConfig-" + RAND);
+      NetworkInterfaceCard nic = createNetworkInterfaceCard(resourceGroupName, "jc-nic-" + RAND, location, "ipConfig-" + RAND);
       assertNotNull(nic);
       nicName = nic.name();
 
@@ -107,9 +111,10 @@ public class VirtualMachineApiLiveTest extends BaseAzureComputeApiLiveTest {
 
    @Test
    public void testCreate() {
-      VirtualMachine vm = api().createOrUpdate(vmName, LOCATION, getProperties(nicName, null),
+      VirtualMachine vm = api().createOrUpdate(vmName, location, getProperties(nicName, null),
             Collections.<String, String> emptyMap(), null);
       assertTrue(!vm.name().isEmpty());
+      assertEquals(vm.location(), location);
       waitUntilReady(vmName);
    }
 
@@ -195,12 +200,12 @@ public class VirtualMachineApiLiveTest extends BaseAzureComputeApiLiveTest {
    @Test
    public void testCapture() throws IllegalStateException {
       // Capture is only allowed for Blob based VMs, so let's create one VM for this test
-      NetworkInterfaceCard nic = createNetworkInterfaceCard(resourceGroupName, "capture-nic-" + RAND, LOCATION, "ipConfig-" + RAND);
-      StorageService storageService = createStorageService(resourceGroupName, "capture" + RAND, LOCATION);
+      NetworkInterfaceCard nic = createNetworkInterfaceCard(resourceGroupName, "capture-nic-" + RAND, location, "ipConfig-" + RAND);
+      StorageService storageService = createStorageService(resourceGroupName, "capture" + RAND, location);
       String blob = storageService.storageServiceProperties().primaryEndpoints().get("blob");
       
       String captureVmName = "capture-" + RAND;
-      api().createOrUpdate(captureVmName, LOCATION, getProperties(nic.name(), blob),
+      api().createOrUpdate(captureVmName, location, getProperties(nic.name(), blob),
             Collections.<String, String> emptyMap(), null);
       waitUntilReady(captureVmName);
       

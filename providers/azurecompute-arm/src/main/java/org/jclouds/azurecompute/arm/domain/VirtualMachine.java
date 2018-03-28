@@ -70,7 +70,7 @@ public abstract class VirtualMachine {
    @SerializedNames({"id", "name", "type", "location", "tags", "properties", "plan"})
    public static VirtualMachine create(final String id, final String name, final String type, final String location,
                                        @Nullable final Map<String, String> tags, VirtualMachineProperties properties, @Nullable Plan plan) {
-      return builder().id(id).name(name).type(type).location(location).tags(tags).properties(properties).plan(plan)
+      return builder().id(id).name(name).type(type).location(location.toLowerCase()).tags(tags).properties(properties).plan(plan)
          .build();
    }
 
