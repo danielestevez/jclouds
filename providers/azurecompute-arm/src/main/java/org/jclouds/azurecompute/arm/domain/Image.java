@@ -57,7 +57,7 @@ public abstract class Image {
    @SerializedNames({"id", "name", "location", "properties", "tags"})
    public static Image create(final String id, final String name, final String location,
          final ImageProperties properties, final Map<String, String> tags) {
-      return builder().id(id).name(name).location(location).properties(properties).tags(tags).build();
+      return builder().id(id).name(name).location(location.toLowerCase()).properties(properties).tags(tags).build();
    }
 
    public abstract Builder toBuilder();

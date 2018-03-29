@@ -21,6 +21,8 @@ import static com.google.common.collect.Iterables.any;
 import static com.google.common.collect.Iterables.getOnlyElement;
 import static org.jclouds.azurecompute.arm.config.AzureComputeProperties.TIMEOUT_RESOURCE_DELETED;
 import static org.jclouds.compute.predicates.NodePredicates.inGroup;
+import static org.jclouds.location.reference.LocationConstants.PROPERTY_REGIONS;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -36,6 +38,7 @@ import org.jclouds.azurecompute.arm.internal.AzureLiveTestUtils;
 import org.jclouds.compute.RunNodesException;
 import org.jclouds.compute.domain.NodeMetadata;
 import org.jclouds.compute.internal.BaseComputeServiceContextLiveTest;
+import org.jclouds.location.reference.LocationConstants;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -63,12 +66,14 @@ public class ImageApiLiveTest extends BaseComputeServiceContextLiveTest {
    public ImageApiLiveTest() {
       provider = "azurecompute-arm";
       group = getClass().getSimpleName().toLowerCase();
+      location = System.getProperty(LocationConstants.PROPERTY_REGION, "westeurope");
    }
 
    @Override
    protected Properties setupProperties() {
       Properties properties = super.setupProperties();
       AzureLiveTestUtils.defaultProperties(properties);
+      properties.put(PROPERTY_REGIONS, location);
       checkNotNull(setIfTestSystemPropertyPresent(properties, "oauth.endpoint"), "test.oauth.endpoint");
       return properties;
    }
@@ -86,7 +91,7 @@ public class ImageApiLiveTest extends BaseComputeServiceContextLiveTest {
    public void setupContext() {
       super.setupContext();
       // Use the resource name conventions used in the abstraction
-      location = view.getComputeService().templateBuilder().build().getLocation().getId();
+      //      location = System.getProperty(LocationConstants.PROPERTY_REGION, "westeurope");
       view.unwrapApi(AzureComputeApi.class).getResourceGroupApi().create(group, location, null);
       imageApi = api.getVirtualMachineImageApi(group);
    }
@@ -122,6 +127,7 @@ public class ImageApiLiveTest extends BaseComputeServiceContextLiveTest {
       image = imageApi.createOrUpdate(imageName, location, ImageProperties.builder()
             .sourceVirtualMachine(vmIdRef).build());
       assertNotNull(image);
+      assertEquals(image.location(), location);
    }
 
    @Test(dependsOnMethods = "testCreateImage")
