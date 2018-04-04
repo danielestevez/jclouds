@@ -126,7 +126,7 @@ public class CreateResourcesThenCreateNodes extends CreateNodesWithGroupEncodedI
                + "Authentication will delegate to the ssh-agent");
       }
 
-      String location = template.getLocation().getId();
+      String location = template.getLocation().getId().toLowerCase();
 
       createResourceGroupIfNeeded(group, location, options);
       
