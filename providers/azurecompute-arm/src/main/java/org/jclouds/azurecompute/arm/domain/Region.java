@@ -83,7 +83,7 @@ public enum Region {
       Preconditions.checkNotNull(name);
 
       for (Region region : values()) {
-         if (name.equals(region.name)) {
+         if (name.equalsIgnoreCase(region.name)) {
             return region;
          }
       }

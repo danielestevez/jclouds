@@ -116,7 +116,7 @@ public class AzureComputeSecurityGroupExtension implements SecurityGroupExtensio
       return ImmutableSet.copyOf(filter(securityGroups, new Predicate<SecurityGroup>() {
          @Override
          public boolean apply(SecurityGroup input) {
-            return locations.contains(input.getLocation().getId());
+            return locations.contains(input.getLocation().getId().toLowerCase());
          }
       }));
    }
