@@ -25,7 +25,7 @@ import static org.jclouds.azurecompute.arm.compute.domain.ResourceGroupAndName.f
 import static org.jclouds.azurecompute.arm.domain.IdReference.extractName;
 import static org.jclouds.azurecompute.arm.domain.IdReference.extractResourceGroup;
 import static org.jclouds.compute.util.ComputeServiceUtils.addMetadataAndParseTagsFromCommaDelimitedValue;
-import static org.jclouds.location.predicates.LocationPredicates.idEquals;
+import static org.jclouds.location.predicates.LocationPredicates.idEqualsIgnoreCase;
 
 import java.util.List;
 import java.util.Map;
@@ -118,7 +118,7 @@ public class VirtualMachineToNodeMetadata implements Function<VirtualMachine, No
       builder.group(groupFromMetadata != null ? groupFromMetadata : nodeNamingConvention.extractGroup(virtualMachine
             .name()));
 
-      String locationName = virtualMachine.location();
+      String locationName = virtualMachine.location().toLowerCase();
       builder.location(getLocation(locations, locationName));
 
       Optional<? extends Image> image = findImage(virtualMachine.properties().storageProfile(), locationName);
@@ -180,7 +180,7 @@ public class VirtualMachineToNodeMetadata implements Function<VirtualMachine, No
    }
 
    protected static Location getLocation(Supplier<Set<? extends Location>> locations, final String locationName) {
-      return find(locations.get(), idEquals(nullToEmpty(locationName)), null);
+      return find(locations.get(), idEqualsIgnoreCase(nullToEmpty(locationName)), null);
    }
 
    protected Optional<? extends Image> findImage(final StorageProfile storageProfile, String locatioName) {
@@ -200,7 +200,7 @@ public class VirtualMachineToNodeMetadata implements Function<VirtualMachine, No
       return find(hardwares.get().values(), new Predicate<Hardware>() {
          @Override
          public boolean apply(Hardware input) {
-            return input.getId().equals(slashEncoded);
+            return input.getId().equalsIgnoreCase(slashEncoded);
          }
       });
    }

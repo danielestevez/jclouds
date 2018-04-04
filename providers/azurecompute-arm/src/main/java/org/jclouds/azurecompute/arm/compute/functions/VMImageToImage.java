@@ -19,7 +19,7 @@ package org.jclouds.azurecompute.arm.compute.functions;
 import static com.google.common.base.Preconditions.checkNotNull;
 import static com.google.common.collect.Iterables.tryFind;
 import static java.util.Arrays.asList;
-import static org.jclouds.location.predicates.LocationPredicates.idEquals;
+import static org.jclouds.location.predicates.LocationPredicates.idEqualsIgnoreCase;
 
 import java.util.Map;
 import java.util.Set;
@@ -64,7 +64,7 @@ public class VMImageToImage implements Function<VMImage, Image> {
       final ImageBuilder builder = new ImageBuilder();
       addMarketplacePlanToMetadataIfPresent(builder, image);
       
-      Location location = FluentIterable.from(locations.get()).firstMatch(idEquals(image.location())).get();
+      Location location = FluentIterable.from(locations.get()).firstMatch(idEqualsIgnoreCase(image.location())).get();
       
       if (image.custom()) {
          builder

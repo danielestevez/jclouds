@@ -57,21 +57,22 @@ public class TemplateToAvailabilitySet implements Function<Template, Availabilit
       AzureTemplateOptions options = input.getOptions().as(AzureTemplateOptions.class);
 
       AvailabilitySet availabilitySet = null;
-      String location = input.getLocation().getId();
+      String location = input.getLocation().getId().toLowerCase();
       String resourceGroup = options.getResourceGroup();
 
       if (options.getAvailabilitySetName() != null) {
          availabilitySet = api.getAvailabilitySetApi(resourceGroup).get(options.getAvailabilitySetName());
 
          checkArgument(availabilitySet != null, "No availability set with name '%s' was found", options.getAvailabilitySetName());
-         checkArgument(location.equals(availabilitySet.location()), "The availability set %s does not belong to location %s",
+         checkArgument(location.equalsIgnoreCase(availabilitySet.location()), "The availability set %s does not belong to "
+                     + "location %s",
                options.getAvailabilitySetName(), location);
 
       } else if (options.getAvailabilitySet() != null) {
          availabilitySet = api.getAvailabilitySetApi(resourceGroup).get(options.getAvailabilitySet().name());
 
          if (availabilitySet != null) {
-            checkArgument(location.equals(availabilitySet.location()), "The availability set %s does not belong to location %s",
+            checkArgument(location.equalsIgnoreCase(availabilitySet.location()), "The availability set %s does not belong to location %s",
                   options.getAvailabilitySet().name(), location);
          } else {
             Map<String, String> tags = new HashMap<String, String>();

@@ -46,5 +46,27 @@ public abstract class LocationAndName {
    public String slashEncode() {
       return location() + "/" + name();
    }
-   
+
+   @Override
+   public final boolean equals(Object o) {
+      if (o == this) {
+         return true;
+      }
+      if (o instanceof LocationAndName) {
+         LocationAndName that = (LocationAndName) o;
+         return (this.location().equalsIgnoreCase(that.location()))
+               && (this.location().equalsIgnoreCase(that.name()));
+      }
+      return false;
+   }
+
+   @Override
+   public final int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= this.location().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= this.name().toLowerCase().hashCode();
+      return h;
+   }
 }

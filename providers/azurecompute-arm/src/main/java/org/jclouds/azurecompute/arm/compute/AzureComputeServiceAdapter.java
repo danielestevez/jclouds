@@ -147,7 +147,7 @@ public class AzureComputeServiceAdapter implements ComputeServiceAdapter<Virtual
 
    @Override
    public NodeAndInitialCredentials<VirtualMachine> createNodeWithGroupEncodedIntoName(final String group, final String name, final Template template) {
-      String locationName = template.getLocation().getId();
+      String locationName = template.getLocation().getId().toLowerCase();
       Image image = template.getImage();
       String hardwareId = fromSlashEncoded(template.getHardware().getId()).name();
       AzureTemplateOptions templateOptions = template.getOptions().as(AzureTemplateOptions.class);
@@ -357,7 +357,7 @@ public class AzureComputeServiceAdapter implements ComputeServiceAdapter<Virtual
          nodes.addAll(filter(vms, new Predicate<VirtualMachine>() {
             @Override
             public boolean apply(VirtualMachine input) {
-               return regionIds.get().contains(input.location());
+               return regionIds.get().contains(input.location().toLowerCase());
             }
          }));
       }

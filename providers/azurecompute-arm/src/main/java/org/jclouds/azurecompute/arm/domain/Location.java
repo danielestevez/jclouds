@@ -55,4 +55,36 @@ public abstract class Location {
 
       return new AutoValue_Location(id, name, displayName, longitude, latitude);
    }
+
+   @Override
+   public final boolean equals(Object o) {
+      if (o == this) {
+         return true;
+      }
+      if (o instanceof Location) {
+         Location that = (Location) o;
+         return (this.id().equalsIgnoreCase(that.id()))
+               && (this.name().equalsIgnoreCase(that.name()))
+               && (this.displayName().equals(that.displayName()))
+               && (Double.doubleToLongBits(this.longitude()) == Double.doubleToLongBits(that.longitude()))
+               && (Double.doubleToLongBits(this.latitude()) == Double.doubleToLongBits(that.latitude()));
+      }
+      return false;
+   }
+
+   @Override
+   public final int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= this.id().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= this.name().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= this.displayName().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (Double.doubleToLongBits(this.longitude()) >>> 32) ^ Double.doubleToLongBits(this.longitude());
+      h *= 1000003;
+      h ^= (Double.doubleToLongBits(this.latitude()) >>> 32) ^ Double.doubleToLongBits(this.latitude());
+      return h;
+   }
 }

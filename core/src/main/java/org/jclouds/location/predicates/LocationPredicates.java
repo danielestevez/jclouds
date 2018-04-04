@@ -137,6 +137,30 @@ public class LocationPredicates {
          return "idEquals(" + id + ")";
       }
    }
+
+   public static Predicate<Location> idEqualsIgnoreCase(String id) {
+      return new IdEqualsIgnoreCase(id);
+   }
+
+   static class IdEqualsIgnoreCase implements Predicate<Location> {
+
+      private final String id;
+
+      IdEqualsIgnoreCase(String id) {
+         this.id = checkNotNull(id, "id");
+      }
+
+      @Override
+      public boolean apply(Location input) {
+
+         return input.getId().equalsIgnoreCase(id);
+      }
+
+      @Override
+      public String toString() {
+         return "idEqualsIgnoreCase(" + id + ")";
+      }
+   }
    
    public static Predicate<Location> isZoneOrRegionWhereRegionIdEquals(String region) {
       return new IsZoneOrRegionWhereRegionIdEquals(region);
