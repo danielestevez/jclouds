@@ -25,13 +25,11 @@ import static org.jclouds.azurecompute.arm.compute.domain.ResourceGroupAndName.f
 import static org.jclouds.azurecompute.arm.domain.IdReference.extractName;
 import static org.jclouds.azurecompute.arm.domain.IdReference.extractResourceGroup;
 import static org.jclouds.compute.util.ComputeServiceUtils.addMetadataAndParseTagsFromCommaDelimitedValue;
-import static org.jclouds.location.predicates.LocationPredicates.idEquals;
 import static org.jclouds.location.predicates.LocationPredicates.idEqualsIgnoreCase;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
