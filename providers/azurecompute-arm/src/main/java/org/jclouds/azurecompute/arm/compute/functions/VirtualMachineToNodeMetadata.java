@@ -118,7 +118,7 @@ public class VirtualMachineToNodeMetadata implements Function<VirtualMachine, No
       builder.group(groupFromMetadata != null ? groupFromMetadata : nodeNamingConvention.extractGroup(virtualMachine
             .name()));
 
-      String locationName = virtualMachine.location();
+      String locationName = virtualMachine.location().toLowerCase();
       builder.location(getLocation(locations, locationName));
 
       Optional<? extends Image> image = findImage(virtualMachine.properties().storageProfile(), locationName);
