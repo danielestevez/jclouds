@@ -158,12 +158,12 @@ public class CleanupResources {
    }
 
    public boolean cleanupSecurityGroupIfOrphaned(String resourceGroup, String group) {
-      String name = namingConvention.create().sharedNameForGroup(group);
       NetworkSecurityGroupApi sgapi = api.getNetworkSecurityGroupApi(resourceGroup);
 
       boolean deleted = false;
 
       try {
+         String name = namingConvention.create().sharedNameForGroup(group);
          NetworkSecurityGroup securityGroup = sgapi.get(name);
          if (securityGroup != null) {
             List<NetworkInterfaceCard> nics = securityGroup.properties().networkInterfaces();
