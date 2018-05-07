@@ -127,8 +127,8 @@ public class AzureComputeSecurityGroupExtensionLiveTest extends BaseSecurityGrou
 
          SecurityGroup group = getOnlyElement(groups);
          assertEquals(group.getIpPermissions().size(), 2);
-         assertEquals(get(group.getIpPermissions(), 0), IpPermissions.permit(TCP).fromPort(22).to(24));
-         assertEquals(get(group.getIpPermissions(), 1), IpPermissions.permit(TCP).port(8000));
+         assertTrue(group.getIpPermissions().contains(IpPermissions.permit(TCP).fromPort(22).to(24)));
+         assertTrue(group.getIpPermissions().contains(IpPermissions.permit(TCP).port(8000)));
       } finally {
          computeService.destroyNodesMatching(inGroup(node.getGroup()));
       }
