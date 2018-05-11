@@ -25,7 +25,6 @@ import static org.jclouds.compute.config.ComputeServiceProperties.TIMEOUT_NODE_S
 
 import java.net.URI;
 import java.util.concurrent.Callable;
-
 import javax.annotation.Resource;
 
 import org.jclouds.Constants;
@@ -106,7 +105,7 @@ public class AzureComputeImageExtension implements ImageExtension {
       return userExecutor.submit(new Callable<Image>() {
          @Override
          public Image call() throws Exception {
-            logger.debug(">> generalizing virtal machine %s...", vmName);
+            logger.debug(">> generalizing virtual machine %s...", vmName);
 
             api.getVirtualMachineApi(resourceGroupName).generalize(vmName);
 
@@ -131,4 +130,5 @@ public class AzureComputeImageExtension implements ImageExtension {
       URI uri = api.getVirtualMachineImageApi(image.resourceGroup()).delete(image.name());
       return resourceDeleted.apply(uri);
    }
+
 }
