@@ -19,7 +19,6 @@ package org.jclouds.azurecompute.arm.compute.strategy;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
