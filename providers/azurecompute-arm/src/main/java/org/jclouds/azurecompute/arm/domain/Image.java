@@ -83,4 +83,36 @@ public abstract class Image {
          return autoBuild();
       }
    }
+
+   @Override
+   public boolean equals(Object o) {
+      if (o == this) {
+         return true;
+      }
+      if (o instanceof Image) {
+         Image that = (Image) o;
+         return ((this.id() == null) ? (that.id() == null) : this.id().equalsIgnoreCase(that.id()))
+               && ((this.name() == null) ? (that.name() == null) : this.name().equalsIgnoreCase(that.name()))
+               && (this.location().equalsIgnoreCase(that.location()))
+               && (this.properties().equals(that.properties()))
+               && ((this.tags() == null) ? (that.tags() == null) : this.tags().equals(that.tags()));
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (id() == null) ? 0 : this.id().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (name() == null) ? 0 : this.name().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= this.location().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= this.properties().hashCode();
+      h *= 1000003;
+      h ^= (tags() == null) ? 0 : this.tags().hashCode();
+      return h;
+   }
 }

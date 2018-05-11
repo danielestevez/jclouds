@@ -179,4 +179,66 @@ public abstract class VMImage {
       }
       return vmImage;
    }
+
+   @Override
+   public boolean equals(Object o) {
+      if (o == this) {
+         return true;
+      }
+      if (o instanceof VMImage) {
+         VMImage that = (VMImage) o;
+         return ((this.publisher() == null) ? (that.publisher() == null) : this.publisher().equalsIgnoreCase(that.publisher()))
+               && ((this.offer() == null) ? (that.offer() == null) : this.offer().equalsIgnoreCase(that.offer()))
+               && ((this.sku() == null) ? (that.sku() == null) : this.sku().equalsIgnoreCase(that.sku()))
+               && ((this.version() == null) ? (that.version() == null) : this.version().equalsIgnoreCase(that.version()))
+               && ((this.location() == null) ? (that.location() == null) : this.location().equalsIgnoreCase(that.location()))
+               && ((this.group() == null) ? (that.group() == null) : this.group().equalsIgnoreCase(that.group())
+               && ((this.storage() == null) ? (that.storage() == null) : this.storage().equalsIgnoreCase(that.storage()))
+               && ((this.vhd1() == null) ? (that.vhd1() == null) : this.vhd1().equalsIgnoreCase(that.vhd1()))
+               && ((this.vhd2() == null) ? (that.vhd2() == null) : this.vhd2().equalsIgnoreCase(that.vhd2()))
+               && ((this.name() == null) ? (that.name() == null) : this.name().equalsIgnoreCase(that.name()))
+               && (this.custom() == that.custom())
+               && ((this.customImageId() == null) ? (that.customImageId() == null) : this.customImageId().equalsIgnoreCase(
+               that.customImageId()))
+               && ((this.resourceGroup() == null) ? (that.resourceGroup() == null) : this.resourceGroup().equalsIgnoreCase(that
+               .resourceGroup()))
+               && ((this.versionProperties()) == null) ? (that.versionProperties() == null) : this.versionProperties()
+               .equals(that.versionProperties()));
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (publisher() == null) ? 0 : this.publisher().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (offer() == null) ? 0 : this.offer().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (sku() == null) ? 0 : this.sku().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (version() == null) ? 0 : this.version().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (location() == null) ? 0 : this.location().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (group() == null) ? 0 : this.group().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (storage() == null) ? 0 : this.storage().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (vhd1() == null) ? 0 : this.vhd1().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (vhd2() == null) ? 0 : this.vhd2().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (name() == null) ? 0 : this.name().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= this.custom() ? 1231 : 1237;
+      h *= 1000003;
+      h ^= (customImageId() == null) ? 0 : this.customImageId().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (resourceGroup() == null) ? 0 : this.resourceGroup().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (versionProperties() == null) ? 0 : this.versionProperties().hashCode();
+      return h;
+   }
 }
