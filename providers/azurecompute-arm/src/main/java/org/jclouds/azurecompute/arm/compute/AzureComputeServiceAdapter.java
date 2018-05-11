@@ -38,7 +38,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -375,7 +374,9 @@ public class AzureComputeServiceAdapter implements ComputeServiceAdapter<Virtual
    }
 
    private OSProfile createOsProfile(String computerName, Template template) {
-      String defaultLoginUser = template.getImage().getDefaultCredentials().getUser();
+      String defaultLoginUser = template.getImage().getDefaultCredentials() != null ?
+            template.getImage().getDefaultCredentials().getUser() :
+            null;
       String adminUsername = MoreObjects.firstNonNull(template.getOptions().getLoginUser(), defaultLoginUser);
       // Password already generated in CreateResourcesThenCreateNodes (if not set by user)
       String adminPassword = template.getOptions().getLoginPassword();

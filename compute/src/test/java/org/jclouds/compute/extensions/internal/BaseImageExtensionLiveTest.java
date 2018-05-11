@@ -17,6 +17,7 @@
 package org.jclouds.compute.extensions.internal;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.jclouds.compute.options.TemplateOptions.Builder.overrideLoginCredentials;
 import static org.jclouds.compute.predicates.NodePredicates.inGroup;
 import static org.jclouds.util.Predicates2.retry;
 import static org.testng.Assert.assertEquals;
@@ -25,7 +26,6 @@ import static org.testng.Assert.assertTrue;
 
 import java.util.NoSuchElementException;
 import java.util.concurrent.ExecutionException;
-
 import javax.annotation.Resource;
 import javax.inject.Named;
 
@@ -143,8 +143,9 @@ public abstract class BaseImageExtensionLiveTest extends BaseComputeServiceConte
       assertTrue(optImage.isPresent());
 
       NodeMetadata node = Iterables.getOnlyElement(computeService.createNodesInGroup(imageGroup, 1, getNodeTemplate()
-               // fromImage does not use the arg image's id (but we do need to set location)
-               .imageId(optImage.get().getId()).fromImage(optImage.get()).build()));
+            // fromImage does not use the arg image's id (but we do need to set location)
+            .imageId(optImage.get().getId()).fromImage(optImage.get())
+            .options(overrideLoginCredentials(optImage.get().getDefaultCredentials())).build()));
 
       checkReachable(node);
       view.getComputeService().destroyNode(node.getId());

@@ -19,7 +19,6 @@ package org.jclouds.azurecompute.arm.compute.strategy;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -74,7 +73,7 @@ import static org.jclouds.azurecompute.arm.domain.Subnet.extractVirtualNetwork;
 
 @Singleton
 public class CreateResourcesThenCreateNodes extends CreateNodesWithGroupEncodedIntoNameThenAddToSet {
-
+\`
    @Resource
    @Named(ComputeServiceConstants.COMPUTE_LOGGER)
    protected Logger logger = Logger.NULL;
@@ -143,7 +142,9 @@ public class CreateResourcesThenCreateNodes extends CreateNodesWithGroupEncodedI
    private void generatePasswordIfNoneProvided(Template template) {
       TemplateOptions options = template.getOptions();
       if (options.getLoginPassword() == null) {
-         Optional<String> passwordOptional = template.getImage().getDefaultCredentials().getOptionalPassword();
+         Optional<String> passwordOptional = template.getImage().getDefaultCredentials() != null ?
+               template.getImage().getDefaultCredentials().getOptionalPassword() :
+               Optional.<String> absent();
          options.overrideLoginPassword(passwordOptional.or(passwordGenerator.generate()));
       }
    }
