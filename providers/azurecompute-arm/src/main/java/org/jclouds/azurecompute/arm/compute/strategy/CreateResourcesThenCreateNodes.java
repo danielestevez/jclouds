@@ -16,6 +16,15 @@
  */
 package org.jclouds.azurecompute.arm.compute.strategy;
 
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.getOnlyElement;
+import static org.jclouds.azurecompute.arm.config.AzureComputeProperties.DEFAULT_SUBNET_ADDRESS_PREFIX;
+import static org.jclouds.azurecompute.arm.config.AzureComputeProperties.DEFAULT_VNET_ADDRESS_SPACE_PREFIX;
+import static org.jclouds.azurecompute.arm.domain.IdReference.extractName;
+import static org.jclouds.azurecompute.arm.domain.IdReference.extractResourceGroup;
+import static org.jclouds.azurecompute.arm.domain.Subnet.extractVirtualNetwork;
+
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
@@ -62,18 +71,8 @@ import com.google.common.collect.Multimap;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.google.common.util.concurrent.ListeningExecutorService;
 
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.getOnlyElement;
-import static org.jclouds.azurecompute.arm.config.AzureComputeProperties.DEFAULT_SUBNET_ADDRESS_PREFIX;
-import static org.jclouds.azurecompute.arm.config.AzureComputeProperties.DEFAULT_VNET_ADDRESS_SPACE_PREFIX;
-import static org.jclouds.azurecompute.arm.domain.IdReference.extractName;
-import static org.jclouds.azurecompute.arm.domain.IdReference.extractResourceGroup;
-import static org.jclouds.azurecompute.arm.domain.Subnet.extractVirtualNetwork;
-
 @Singleton
 public class CreateResourcesThenCreateNodes extends CreateNodesWithGroupEncodedIntoNameThenAddToSet {
-\`
    @Resource
    @Named(ComputeServiceConstants.COMPUTE_LOGGER)
    protected Logger logger = Logger.NULL;
