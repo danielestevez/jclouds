@@ -38,7 +38,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.annotation.Resource;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -449,7 +448,14 @@ public class AzureComputeServiceAdapter implements ComputeServiceAdapter<Virtual
       logger.debug(">> creating nic %s(%s) with security groups (%s)", nicName, config,
             securityGroup != null ? securityGroup : "");
 
+      // TODO FIX THIS with a proper retry
+      try {
+         Thread.sleep(20000);
+      } catch (InterruptedException e) {
+         e.printStackTrace();
+      }
       final NetworkInterfaceCardApi nicApi = api.getNetworkInterfaceCardApi(resourceGroup);
+
       NetworkInterfaceCard nic = nicApi.createOrUpdate(nicName, location, nicProperties.build(),
             ImmutableMap.of("jclouds", nodeName));
 

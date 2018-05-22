@@ -46,6 +46,8 @@ import org.jclouds.compute.config.ComputeServiceAdapterContextModule;
 import org.jclouds.compute.domain.Hardware;
 import org.jclouds.compute.domain.NodeMetadata;
 import org.jclouds.compute.domain.SecurityGroup;
+import org.jclouds.compute.domain.TemplateBuilder;
+import org.jclouds.compute.domain.internal.AzureTemplateBuilderImpl;
 import org.jclouds.compute.extensions.ImageExtension;
 import org.jclouds.compute.extensions.SecurityGroupExtension;
 import org.jclouds.compute.functions.NodeAndTemplateOptionsToStatement;
@@ -102,6 +104,8 @@ public class AzureComputeServiceContextModule extends
       }).to(AzureComputeImageExtension.class);
       bind(new TypeLiteral<SecurityGroupExtension>() {
       }).to(AzureComputeSecurityGroupExtension.class);
+
+      bind(TemplateBuilder.class).to(AzureTemplateBuilderImpl.class);
    }
    
    @Provides

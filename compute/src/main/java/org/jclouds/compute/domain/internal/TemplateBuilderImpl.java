@@ -16,20 +16,31 @@
  */
 package org.jclouds.compute.domain.internal;
 
-import com.google.common.annotations.VisibleForTesting;
-import com.google.common.base.Function;
-import com.google.common.base.MoreObjects;
-import com.google.common.base.MoreObjects.ToStringHelper;
-import com.google.common.base.Optional;
-import com.google.common.base.Predicate;
-import com.google.common.base.Predicates;
-import com.google.common.base.Supplier;
-import com.google.common.collect.ComparisonChain;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-import com.google.common.collect.Ordering;
-import com.google.common.primitives.Doubles;
+import static com.google.common.base.Preconditions.checkArgument;
+import static com.google.common.base.Preconditions.checkNotNull;
+import static com.google.common.base.Preconditions.checkState;
+import static com.google.common.collect.Iterables.filter;
+import static com.google.common.collect.Iterables.find;
+import static com.google.common.collect.Iterables.size;
+import static com.google.common.collect.Iterables.transform;
+import static com.google.common.collect.Iterables.tryFind;
+import static com.google.common.collect.Lists.newArrayList;
+import static java.lang.String.format;
+import static org.jclouds.compute.util.ComputeServiceUtils.getCores;
+import static org.jclouds.compute.util.ComputeServiceUtils.getCoresAndSpeed;
+import static org.jclouds.compute.util.ComputeServiceUtils.getSpace;
+
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.regex.Pattern;
+import javax.annotation.Resource;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.inject.Provider;
+
 import org.jclouds.collect.Memoized;
 import org.jclouds.compute.domain.ComputeMetadata;
 import org.jclouds.compute.domain.Hardware;
@@ -46,30 +57,20 @@ import org.jclouds.compute.suppliers.ImageCacheSupplier;
 import org.jclouds.domain.Location;
 import org.jclouds.logging.Logger;
 
-import javax.annotation.Resource;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.inject.Provider;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Set;
-import java.util.regex.Pattern;
-
-import static com.google.common.base.Preconditions.checkArgument;
-import static com.google.common.base.Preconditions.checkNotNull;
-import static com.google.common.base.Preconditions.checkState;
-import static com.google.common.collect.Iterables.filter;
-import static com.google.common.collect.Iterables.find;
-import static com.google.common.collect.Iterables.size;
-import static com.google.common.collect.Iterables.transform;
-import static com.google.common.collect.Iterables.tryFind;
-import static com.google.common.collect.Lists.newArrayList;
-import static java.lang.String.format;
-import static org.jclouds.compute.util.ComputeServiceUtils.getCores;
-import static org.jclouds.compute.util.ComputeServiceUtils.getCoresAndSpeed;
-import static org.jclouds.compute.util.ComputeServiceUtils.getSpace;
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Function;
+import com.google.common.base.MoreObjects;
+import com.google.common.base.MoreObjects.ToStringHelper;
+import com.google.common.base.Optional;
+import com.google.common.base.Predicate;
+import com.google.common.base.Predicates;
+import com.google.common.base.Supplier;
+import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.google.common.collect.Ordering;
+import com.google.common.primitives.Doubles;
 
 public class TemplateBuilderImpl implements TemplateBuilder {
    @Resource
@@ -536,7 +537,7 @@ public class TemplateBuilderImpl implements TemplateBuilder {
       return this;
    }
 
-   private boolean currentLocationWiderThan(Location location) {
+   protected boolean currentLocationWiderThan(Location location) {
       return this.location == null || (location != null && this.location.getScope().compareTo(location.getScope()) < 0);
    }
 
@@ -701,7 +702,7 @@ public class TemplateBuilderImpl implements TemplateBuilder {
       return new TemplateImpl(image, hardware, location, options);
    }
 
-   private Iterable<? extends Image> findSupportedImages(Set<? extends Image> images) {
+   protected Iterable<? extends Image> findSupportedImages(Set<? extends Image> images) {
       Predicate<Image> imagePredicate = buildImagePredicate();
       Iterable<? extends Image> supportedImages = filter(images, imagePredicate);
       if (size(supportedImages) == 0) {

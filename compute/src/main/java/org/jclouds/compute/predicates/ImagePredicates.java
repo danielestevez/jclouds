@@ -126,6 +126,28 @@ public class ImagePredicates {
    }
 
    /**
+    * evaluates true if the Image
+    *
+    * @param ids ids of the images
+    * @return predicate
+    */
+   public static Predicate<Image> idEqualsIgnoreCase(final String id) {
+      checkNotNull(id, "id must be defined");
+      return new Predicate<Image>() {
+         @Override
+         public boolean apply(Image image) {
+            return id.equalsIgnoreCase(image.getId());
+         }
+
+         @Override
+         public String toString() {
+            return "idEquals(" + id + ")";
+         }
+      };
+   }
+
+
+   /**
     * return true if this is a 64bit image.
     */
    public static Predicate<Image> is64Bit() {
