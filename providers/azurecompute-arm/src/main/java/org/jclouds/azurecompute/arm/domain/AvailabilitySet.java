@@ -220,4 +220,49 @@ public abstract class AvailabilitySet {
          return autoBuild();
       }
    }
+
+   @Override
+   public boolean equals(Object o) {
+      if (o == this) {
+         return true;
+      }
+      if (o instanceof AvailabilitySet) {
+         AvailabilitySet that = (AvailabilitySet) o;
+         return ((this.id() == null) ? (that.id() == null) : this.id().equalsIgnoreCase(that.id())) && ((this.name()
+               == null) ? (that.name() == null) : this.name().equalsIgnoreCase(that.name())) && ((this.type() == null) ?
+               (that.type() == null) :
+               this.type().equalsIgnoreCase(that.type())) && ((this.location() == null) ?
+               (that.location() == null) :
+               this.location().equalsIgnoreCase(that.location())) && ((this.sku() == null) ?
+               (that.sku() == null) :
+               this.sku().equals(that.sku())) && ((this.tags() == null) ?
+               (that.tags() == null) :
+               this.tags().equals(that.tags())) && ((this.properties() == null) ?
+               (that.properties() == null) :
+               this.properties().equals(that.properties()));
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (id() == null) ? 0 : this.id().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (name() == null) ? 0 : this.name().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (type() == null) ? 0 : this.type().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (location() == null) ? 0 : this.location().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (sku() == null) ? 0 : this.sku().hashCode();
+      h *= 1000003;
+      h ^= (tags() == null) ? 0 : this.tags().hashCode();
+      h *= 1000003;
+      h ^= (properties() == null) ? 0 : this.properties().hashCode();
+      return h;
+   }
+
+
 }

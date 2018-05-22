@@ -37,4 +37,38 @@ public abstract class SKU {
 
       return new AutoValue_SKU(location, name, id, family);
    }
+
+   @Override
+   public boolean equals(Object o) {
+      if (o == this) {
+         return true;
+      }
+      if (o instanceof SKU) {
+         SKU that = (SKU) o;
+         return ((this.location() == null) ?
+               (that.location() == null) :
+               this.location().equalsIgnoreCase(that.location())) && ((this.name() == null) ?
+               (that.name() == null) :
+               this.name().equalsIgnoreCase(that.name())) && ((this.id() == null) ?
+               (that.id() == null) :
+               this.id().equalsIgnoreCase(that.id())) && ((this.family() == null) ?
+               (that.family() == null) :
+               this.family().equalsIgnoreCase(that.family()));
+      }
+      return false;
+   }
+
+   @Override
+   public int hashCode() {
+      int h = 1;
+      h *= 1000003;
+      h ^= (location() == null) ? 0 : this.location().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (name() == null) ? 0 : this.name().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (id() == null) ? 0 : this.id().toLowerCase().hashCode();
+      h *= 1000003;
+      h ^= (family() == null) ? 0 : this.family().toLowerCase().hashCode();
+      return h;
+   }
 }

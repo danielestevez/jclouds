@@ -204,8 +204,8 @@ public class AzureTemplateOptions extends TemplateOptions implements Cloneable {
 
       AzureTemplateOptions that = (AzureTemplateOptions) o;
 
-      return Objects.equal(availabilitySetName, that.availabilitySetName)
-            && Objects.equal(resourceGroup, that.resourceGroup) && Objects.equal(availabilitySet, that.availabilitySet)
+      return availabilitySetName.equalsIgnoreCase(that.availabilitySetName) && resourceGroup
+            .equalsIgnoreCase(that.resourceGroup) && Objects.equal(availabilitySet, that.availabilitySet)
             && Objects.equal(dataDisks, that.dataDisks) && Objects.equal(ipOptions, that.ipOptions)
             && Objects.equal(windowsConfiguration, that.windowsConfiguration) && Objects.equal(secrets, that.secrets)
             && Objects.equal(this.customData, that.customData);
@@ -306,7 +306,7 @@ public class AzureTemplateOptions extends TemplateOptions implements Cloneable {
       }
 
       /**
-       * @see AzureTemplateOptions#secrets(List)
+       * @see AzureTemplateOptions#secrets(Iterable)
        */
       public static AzureTemplateOptions secrets(Iterable<? extends Secrets> secrets) {
          AzureTemplateOptions options = new AzureTemplateOptions();
