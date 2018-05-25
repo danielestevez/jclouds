@@ -448,12 +448,6 @@ public class AzureComputeServiceAdapter implements ComputeServiceAdapter<Virtual
       logger.debug(">> creating nic %s(%s) with security groups (%s)", nicName, config,
             securityGroup != null ? securityGroup : "");
 
-      // TODO FIX THIS with a proper retry
-      try {
-         Thread.sleep(20000);
-      } catch (InterruptedException e) {
-         e.printStackTrace();
-      }
       final NetworkInterfaceCardApi nicApi = api.getNetworkInterfaceCardApi(resourceGroup);
 
       NetworkInterfaceCard nic = nicApi.createOrUpdate(nicName, location, nicProperties.build(),

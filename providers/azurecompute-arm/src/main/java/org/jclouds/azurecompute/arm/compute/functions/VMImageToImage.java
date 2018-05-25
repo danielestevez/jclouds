@@ -67,18 +67,14 @@ public class VMImageToImage implements Function<VMImage, Image> {
       Location location = FluentIterable.from(locations.get()).firstMatch(idEqualsIgnoreCase(image.location())).get();
       
       if (image.custom()) {
-         builder
-            .id(image.encodeFieldsToUniqueIdCustom())
-            .providerId(image.customImageId())
-            .name(image.name())
+         builder.id(image.encodeFieldsToUniqueIdCustom().toLowerCase()).providerId(image.customImageId().toLowerCase())
+               .name(image.name().toLowerCase())
             .location(location)
             .description(image.group())
             .status(Image.Status.AVAILABLE)
             .version("latest");
       } else {
-         builder
-            .id(image.encodeFieldsToUniqueId())
-            .providerId(image.publisher())
+         builder.id(image.encodeFieldsToUniqueId().toLowerCase()).providerId(image.publisher().toLowerCase())
             .name(image.offer())
             .location(location)
             .description(image.sku())
