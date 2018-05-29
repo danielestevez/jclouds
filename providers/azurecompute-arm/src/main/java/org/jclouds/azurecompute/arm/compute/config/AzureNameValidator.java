@@ -46,7 +46,7 @@ public class AzureNameValidator extends Validator<String> {
       CharMatcher range = getAcceptableRange();
       if (!range.matchesAllOf(name))
          throw exception(name,
-               "Should have lowercase or uppercase ASCII letters, numbers, dashes, underscores and " + "periods");
+               "Should have lowercase or uppercase ASCII letters, numbers, dashes, underscores and periods");
    }
 
    private CharMatcher getAcceptableRange() {
@@ -54,8 +54,7 @@ public class AzureNameValidator extends Validator<String> {
    }
 
    protected IllegalArgumentException exception(String name, String reason) {
-      return new IllegalArgumentException(
-            String.format("Object '%s' doesn't match Azure naming constraints. " + "Reason: %s", name,
+      return new IllegalArgumentException(String.format("Object '%s' doesn't match Azure naming constraints: %s", name,
                   reason));
    }
 
