@@ -98,7 +98,7 @@ public class VirtualNetworkGatewayConnectionApiLiveTest extends BaseAzureCompute
       PublicIPAddressProperties props = PublicIPAddressProperties.builder()
             .publicIPAllocationMethod(IpAllocationMethod.Dynamic.name()).idleTimeoutInMinutes(4).build();
       PublicIPAddress publicIp = api.getPublicIPAddressApi(resourceGroupName).createOrUpdate(name + "-publicip",
-            LOCATION, Collections.<String, String> emptyMap(), props);
+            LOCATION, Collections.<String, String> emptyMap(), props, null);
 
       IpConfigurationProperties ipprops = IpConfigurationProperties.builder(IpAllocationMethod.Dynamic)
             .subnet(IdReference.create(subnet.id())).publicIPAddress(IdReference.create(publicIp.id())).build();

@@ -33,6 +33,7 @@ import org.jclouds.Fallbacks.EmptyListOnNotFoundOr404;
 import org.jclouds.Fallbacks.NullOnNotFoundOr404;
 import org.jclouds.azurecompute.arm.domain.LoadBalancer;
 import org.jclouds.azurecompute.arm.domain.LoadBalancerProperties;
+import org.jclouds.azurecompute.arm.domain.LoadBalancerSKU;
 import org.jclouds.azurecompute.arm.filters.ApiVersionFilter;
 import org.jclouds.azurecompute.arm.functions.URIParser;
 import org.jclouds.javax.annotation.Nullable;
@@ -68,7 +69,7 @@ public interface LoadBalancerApi {
    @MapBinder(BindToJsonPayload.class)
    LoadBalancer createOrUpdate(@PathParam("loadbalancername") String lbName,
          @PayloadParam("location") String location, @Nullable @PayloadParam("tags") Map<String, String> tags,
-         @PayloadParam("properties") LoadBalancerProperties properties);
+         @PayloadParam("properties") LoadBalancerProperties properties, @Nullable @PayloadParam("sku") LoadBalancerSKU sku);
 
    @Named("loadbalancer:delete")
    @Path("/{loadbalancername}")

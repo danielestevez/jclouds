@@ -29,6 +29,7 @@ import javax.ws.rs.core.MediaType;
 
 import org.jclouds.Fallbacks.EmptyListOnNotFoundOr404;
 import org.jclouds.Fallbacks.NullOnNotFoundOr404;
+import org.jclouds.azurecompute.arm.domain.PublicAddressSKU;
 import org.jclouds.azurecompute.arm.domain.PublicIPAddress;
 import org.jclouds.azurecompute.arm.domain.PublicIPAddressProperties;
 import org.jclouds.azurecompute.arm.filters.ApiVersionFilter;
@@ -68,7 +69,9 @@ public interface PublicIPAddressApi {
    PublicIPAddress createOrUpdate(@PathParam("publicipaddressname") String publicipaddressname,
                                                  @PayloadParam("location") String location,
                                                  @Nullable @PayloadParam("tags") Map<String, String> tags,
-                                                 @PayloadParam("properties") PublicIPAddressProperties properties);
+                                                 @PayloadParam("properties") PublicIPAddressProperties properties,
+         @Nullable @PayloadParam("sku") PublicAddressSKU sku); // TODO change null parameters for specific SKUs
+   // (best practice)
 
    @Named("publicipaddress:get")
    @Path("/resourcegroups/{resourcegroup}/providers/Microsoft.Network/publicIPAddresses/{publicipaddressname}")

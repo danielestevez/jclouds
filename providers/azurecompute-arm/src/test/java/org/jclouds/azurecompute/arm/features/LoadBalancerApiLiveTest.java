@@ -54,6 +54,8 @@ import org.jclouds.azurecompute.arm.domain.IpConfiguration;
 import org.jclouds.azurecompute.arm.domain.IpConfigurationProperties;
 import org.jclouds.azurecompute.arm.domain.LoadBalancer;
 import org.jclouds.azurecompute.arm.domain.LoadBalancerProperties;
+import org.jclouds.azurecompute.arm.domain.LoadBalancerSKU;
+import org.jclouds.azurecompute.arm.domain.LoadBalancerSKU.LoadBalancerSKUName;
 import org.jclouds.azurecompute.arm.domain.LoadBalancingRule;
 import org.jclouds.azurecompute.arm.domain.LoadBalancingRuleProperties;
 import org.jclouds.azurecompute.arm.domain.LoadBalancingRuleProperties.Protocol;
@@ -62,6 +64,7 @@ import org.jclouds.azurecompute.arm.domain.NetworkInterfaceCardProperties;
 import org.jclouds.azurecompute.arm.domain.Probe;
 import org.jclouds.azurecompute.arm.domain.ProbeProperties;
 import org.jclouds.azurecompute.arm.domain.Provisionable;
+import org.jclouds.azurecompute.arm.domain.PublicAddressSKU;
 import org.jclouds.azurecompute.arm.domain.PublicIPAddress;
 import org.jclouds.azurecompute.arm.domain.PublicIPAddressProperties;
 import org.jclouds.azurecompute.arm.domain.VirtualMachine;
@@ -88,6 +91,8 @@ public class LoadBalancerApiLiveTest extends BaseComputeServiceContextLiveTest {
 
    private static final String lbName = String.format("lb-%s-%s", LoadBalancerApiLiveTest.class.getSimpleName()
          .toLowerCase(), System.getProperty("user.name"));
+
+   private static final String lbStandardName = lbName + "Standard";
 
    private Predicate<URI> resourceDeleted;
    private PublicIpAvailablePredicateFactory publicIpAvailable;
@@ -161,18 +166,41 @@ public class LoadBalancerApiLiveTest extends BaseComputeServiceContextLiveTest {
    }
 
    @Test(dependsOnMethods = "testDeleteLoadBalancerDoesNotExist")
-   public void testCreateLoadBalancer() {
-      LoadBalancer createLB = newLoadBalancer(lbName, location);
+   public void testCreateLoadBalancerStandard() {
+      LoadBalancer createLB = newLoadBalancer(lbStandardName, location);
 
-      PublicIPAddress publicIP = createPublicIPAddress("Ip4LoadBalancer");
-      FrontendIPConfigurationsProperties fronendProps = FrontendIPConfigurationsProperties.builder()
+      PublicIPAddress publicIP = createPublicIPAddress("Ip4LoadBalancerStandard",
+            PublicAddressSKU.create(PublicAddressSKU.PublicIPAddressSkuName.Standard));
+      FrontendIPConfigurationsProperties frontendProps = FrontendIPConfigurationsProperties.builder()
             .publicIPAddress(IdReference.create(publicIP.id())).build();
-      FrontendIPConfigurations frontendIps = FrontendIPConfigurations.create("ipConfigs", null, fronendProps, null);
+      FrontendIPConfigurations frontendIps = FrontendIPConfigurations.create("ipConfigs", null, frontendProps, null);
       LoadBalancerProperties props = LoadBalancerProperties.builder()
             .frontendIPConfigurations(ImmutableList.of(frontendIps)).build();
 
-      lb = lbApi.createOrUpdate(lbName, createLB.location(), createLB.tags(), props);
+      lb = lbApi.createOrUpdate(lbStandardName, createLB.location(), createLB.tags(), props,
+            LoadBalancerSKU.create(LoadBalancerSKUName.Standard)); // TODO Tier should exist? what are the values?
+      // Undocumented field from MS
       assertNotNull(lb);
+      assertEquals(lb.name(), lbStandardName);
+      assertEquals(lb.sku().name(), LoadBalancerSKUName.Standard);
+   }
+
+   @Test(dependsOnMethods = "testDeleteLoadBalancerDoesNotExist")
+   public void testCreateLoadBalancer() {
+      LoadBalancer createLB = newLoadBalancer(lbName, location);
+
+      PublicIPAddress publicIP = createPublicIPAddress("Ip4LoadBalancer",
+            PublicAddressSKU.create(PublicAddressSKU.PublicIPAddressSkuName.Basic));
+      FrontendIPConfigurationsProperties frontendProps = FrontendIPConfigurationsProperties.builder()
+            .publicIPAddress(IdReference.create(publicIP.id())).build();
+      FrontendIPConfigurations frontendIps = FrontendIPConfigurations.create("ipConfigs", null, frontendProps, null);
+      LoadBalancerProperties props = LoadBalancerProperties.builder()
+            .frontendIPConfigurations(ImmutableList.of(frontendIps)).build();
+
+      lb = lbApi.createOrUpdate(lbName, createLB.location(), createLB.tags(), props, null);
+      assertNotNull(lb);
+      assertEquals(lb.name(), lbName);
+      assertEquals(lb.sku().name(), LoadBalancerSKU.LoadBalancerSKUName.Basic);
    }
 
    @Test(dependsOnMethods = "testCreateLoadBalancer")
@@ -305,7 +333,8 @@ public class LoadBalancerApiLiveTest extends BaseComputeServiceContextLiveTest {
       assertResourceDeleted(uri);
    }
 
-   private PublicIPAddress createPublicIPAddress(final String publicIpAddressName) {
+   private PublicIPAddress createPublicIPAddress(final String publicIpAddressName,
+         PublicAddressSKU sku) {
       final PublicIPAddressApi ipApi = view.unwrapApi(AzureComputeApi.class).getPublicIPAddressApi(group);
       PublicIPAddress publicIPAddress = ipApi.get(publicIpAddressName);
 
@@ -313,7 +342,7 @@ public class LoadBalancerApiLiveTest extends BaseComputeServiceContextLiveTest {
          final Map<String, String> tags = ImmutableMap.of("testkey", "testvalue");
          PublicIPAddressProperties properties = PublicIPAddressProperties.builder().publicIPAllocationMethod("Static")
                .idleTimeoutInMinutes(4).build();
-         publicIPAddress = ipApi.createOrUpdate(publicIpAddressName, location, tags, properties);
+         publicIPAddress = ipApi.createOrUpdate(publicIpAddressName, location, tags, properties, sku);
 
          checkState(publicIpAvailable.create(group).apply(publicIpAddressName),
                "Public IP was not provisioned in the configured timeout");
@@ -421,7 +450,7 @@ public class LoadBalancerApiLiveTest extends BaseComputeServiceContextLiveTest {
    }
 
    private LoadBalancer updateLoadBalancer(final String name, LoadBalancerProperties props) {
-      lbApi.createOrUpdate(name, location, null, props);
+      lbApi.createOrUpdate(name, location, null, props, null);
       resourceAvailable.apply(new Supplier<Provisionable>() {
          @Override
          public Provisionable get() {

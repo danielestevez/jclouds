@@ -71,7 +71,7 @@ public class VirtualNetworkGatewayApiLiveTest extends BaseAzureComputeApiLiveTes
       PublicIPAddressProperties props = PublicIPAddressProperties.builder()
             .publicIPAllocationMethod(IpAllocationMethod.Dynamic.name()).idleTimeoutInMinutes(4).build();
       publicIp = api.getPublicIPAddressApi(resourceGroupName).createOrUpdate(name + "-publicip", LOCATION,
-            Collections.<String, String> emptyMap(), props);
+            Collections.<String, String> emptyMap(), props, null);
    }
 
    @Test

@@ -34,11 +34,12 @@ public abstract class PublicIPAddress {
    public abstract String location();
    @Nullable public abstract Map<String, String> tags();
    public abstract PublicIPAddressProperties properties();
+   @Nullable  public abstract LoadBalancerSKU sku();
 
-   @SerializedNames({ "name", "id", "etag", "location", "tags", "properties" })
+   @SerializedNames({ "name", "id", "etag", "location", "tags", "properties", "sku" })
    public static PublicIPAddress create(String name, String id, String etag, String location, Map<String, String> tags,
-         PublicIPAddressProperties properties) {
-      return builder().name(name).id(id).etag(etag).location(location).tags(tags).properties(properties).build();
+         PublicIPAddressProperties properties, LoadBalancerSKU sku) {
+      return builder().name(name).id(id).etag(etag).location(location).tags(tags).properties(properties).sku(sku).build();
    }
    
    PublicIPAddress() {
@@ -59,6 +60,7 @@ public abstract class PublicIPAddress {
       public abstract Builder location(String location);
       public abstract Builder tags(Map<String, String> tags);
       public abstract Builder properties(PublicIPAddressProperties properties);
+      public abstract Builder sku(LoadBalancerSKU sku);
       
       abstract Map<String, String> tags();
       abstract PublicIPAddress autoBuild();

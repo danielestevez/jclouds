@@ -33,11 +33,12 @@ public abstract class LoadBalancer {
    @Nullable public abstract String etag();
    @Nullable public abstract Map<String, String> tags();
    @Nullable public abstract LoadBalancerProperties properties();
+   @Nullable public abstract LoadBalancerSKU sku();
 
-   @SerializedNames({ "id", "name", "location", "etag", "tags", "properties", })
+   @SerializedNames({ "id", "name", "location", "etag", "tags", "properties", "sku"})
    public static LoadBalancer create(String id, final String name, final String location, final String etag,
-         final Map<String, String> tags, final LoadBalancerProperties properties) {
-      return builder().id(id).name(name).location(location).etag(etag).tags(tags).properties(properties).build();
+         final Map<String, String> tags, final LoadBalancerProperties properties, final LoadBalancerSKU sku) {
+      return builder().id(id).name(name).location(location).etag(etag).tags(tags).properties(properties).sku(sku).build();
    }
    
    public abstract Builder toBuilder();
@@ -54,6 +55,7 @@ public abstract class LoadBalancer {
       public abstract Builder etag(String etag);
       public abstract Builder tags(Map<String, String> tags);
       public abstract Builder properties(LoadBalancerProperties properties);
+      public abstract Builder sku(LoadBalancerSKU sku);
       
       abstract Map<String, String> tags();
 

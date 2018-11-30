@@ -138,7 +138,7 @@ public class VirtualNetworkApiLiveTest extends BaseAzureComputeApiLiveTest {
       LoadBalancerProperties props = LoadBalancerProperties.builder()
             .frontendIPConfigurations(ImmutableList.of(frontendIps)).build();
 
-      LoadBalancer lbCreated = lbApi().createOrUpdate("lbName", LOCATION, null, props);
+      LoadBalancer lbCreated = lbApi().createOrUpdate("lbName", LOCATION, null, props, null);
       assertNotNull(lbCreated);
       return lbCreated;
    }

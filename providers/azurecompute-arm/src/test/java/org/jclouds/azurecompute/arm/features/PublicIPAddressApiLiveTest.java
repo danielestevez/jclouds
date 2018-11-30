@@ -69,7 +69,7 @@ public class PublicIPAddressApiLiveTest extends BaseAzureComputeApiLiveTest {
                   .idleTimeoutInMinutes(4)
                   .build();
 
-      PublicIPAddress ip = ipApi.createOrUpdate(publicIpAddressName, LOCATION, tags, properties);
+      PublicIPAddress ip = ipApi.createOrUpdate(publicIpAddressName, LOCATION, tags, properties, null);
 
       assertNotNull(ip);
       assertEquals(ip.name(), publicIpAddressName);

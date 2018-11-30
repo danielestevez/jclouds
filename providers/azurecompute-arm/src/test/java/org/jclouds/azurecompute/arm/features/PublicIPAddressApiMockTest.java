@@ -40,7 +40,7 @@ public class PublicIPAddressApiMockTest extends BaseAzureComputeApiMockTest {
 
    private final String subscriptionid = "SUBSCRIPTIONID";
    private final String resourcegroup = "myresourcegroup";
-   private final String apiVersion = "api-version=2015-06-15";
+   private final String apiVersion = "api-version=2018-08-01";
    private final String location = "northeurope";
    private final String publicIpName = "mypublicaddress";
 
@@ -139,7 +139,7 @@ public class PublicIPAddressApiMockTest extends BaseAzureComputeApiMockTest {
       PublicIPAddressProperties properties = PublicIPAddressProperties.create(null, null, "Static", 4, null,
               DnsSettings.create("foobar", "foobar.northeurope.cloudapp.azure.com", null));
 
-      PublicIPAddress ip = ipApi.createOrUpdate(publicIpName, location, tags, properties);
+      PublicIPAddress ip = ipApi.createOrUpdate(publicIpName, location, tags, properties, null);
 
       String path = String.format("/subscriptions/%s/resourcegroups/%s/providers/Microsoft.Network/publicIPAddresses/%s?%s", subscriptionid, resourcegroup, publicIpName, apiVersion);
       String json = String.format("{ \"location\": \"%s\", \"tags\": { \"testkey\": \"testvalue\" }, \"properties\": { \"publicIPAllocationMethod\": \"Static\", \"idleTimeoutInMinutes\": 4, \"dnsSettings\": { \"domainNameLabel\": \"foobar\", \"fqdn\": \"foobar.northeurope.cloudapp.azure.com\" } } }", location);
@@ -172,7 +172,7 @@ public class PublicIPAddressApiMockTest extends BaseAzureComputeApiMockTest {
       PublicIPAddressProperties properties = PublicIPAddressProperties.create(null, null, "Static", 4, null,
               DnsSettings.create("foobar", "foobar.northeurope.cloudapp.azure.com", null));
 
-      ipApi.createOrUpdate(publicIpName, location, tags, properties);
+      ipApi.createOrUpdate(publicIpName, location, tags, properties, null);
    }
 
    public void deletePublicIPAddress() throws InterruptedException {
